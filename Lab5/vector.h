@@ -59,6 +59,7 @@ public:
         if (i >= size_) {
             throw "Invalid index";
         }
+        lock_type lock(m);
         return data_[i];
     }
 

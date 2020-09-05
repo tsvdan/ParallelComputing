@@ -28,19 +28,19 @@ int main() {
         for (int i = 0; i < 10; ++i) {
             // std::this_thread::sleep_for(std::chrono::milliseconds(100));
             auto time_try = std::chrono::steady_clock::now();
-            tv.push_back(i);
-            waiting_times.push_back(std::chrono::steady_clock::now() - time_try);
+            auto time_locked = tv.push_back(i);
+            waiting_times.push_back(time_locked - time_try);
         }
     };
     auto lambda2_10 = [&] () -> void {
         for (int i = 0; i < 10; ++i) {
             // std::this_thread::sleep_for(std::chrono::milliseconds(100));
             auto time_try = std::chrono::steady_clock::now();
-            tv.push_back(100);  // если бы я блокировал mutex на обе операции, а не по разу на каждую из них, то они бы действительно ничего не делали
-            waiting_times.push_back(std::chrono::steady_clock::now() - time_try);
+            auto time_locked = tv.push_back(100);  // если бы я блокировал mutex на обе операции, а не по разу на каждую из них, то они бы действительно ничего не делали
+            waiting_times.push_back(time_locked - time_try);
             time_try = std::chrono::steady_clock::now();
-            tv.pop_back();     //  а так получается иногда неожиданно, но благо не крашится ничего, size_ ожидаемый
-            waiting_times.push_back(std::chrono::steady_clock::now() - time_try);
+            time_locked = tv.pop_back();     //  а так получается иногда неожиданно, но благо не крашится ничего, size_ ожидаемый
+            waiting_times.push_back(time_locked - time_try);
         }                     //   а это фактически корректное поведение
     };
     auto lambda_print = [&] () -> void { 
@@ -60,6 +60,7 @@ int main() {
         ths.at(i).join();
     }
     t_print.join(); // ожидал 0 1 4 9 16 25 36 49 64 0 1 2 3 4 5 6 7 8 9, но вообще говоря это некорректный тест
+    cout << tv << endl;
 
     // здесь вызовется ~TimedVector, в котором я рассказываю про коэф эффективного использования (и думал рассказывать про время ожидания)
     // коэф низкий только из-за std::this_thread::sleep_for -- закомментировать и ок
@@ -79,3 +80,20 @@ int main() {
     cout << "   максимальное время ожидания:\t" << max_waiting_time << endl;
     
 }
+
+
+// Пока у меня:
+// 1) плохой тест
+// 2) коэф эф пользования иногда получается > 1
+// 3) нет стэка
+// 4) нет кью
+
+
+
+
+
+
+
+
+
+

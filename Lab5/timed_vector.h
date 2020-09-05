@@ -11,9 +11,12 @@ public:
     SafeVector<T> safe_vector;
 
     TimedVector(const SafeVector<T>& sv) : safe_vector(sv) {
+        time_locked = std::chrono::duration<double>(0);
         time_spawned = clock.now();
     }
+    //
     // другие конструкторы
+    //
     T operator[](size_t i) const {
         return safe_vector[i];
     }
