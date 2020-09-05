@@ -1,2 +1,2 @@
-# ParallelComputing
-123
+# Лабы
+Кодировка UTF-8
