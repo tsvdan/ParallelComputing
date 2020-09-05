@@ -1,6 +1,6 @@
 #pragma once
 #include <cstddef>
-#include <iostream> //<ostream>
+#include <ostream>
 #include <mutex>
 
 typedef std::mutex mutex_type;
@@ -51,7 +51,6 @@ public:
 
 
     ~SafeVector() {
-        std::cout << "size=" << size_ << "\tcapacity=" << capacity_ << std::endl;
         delete[] data_;
         size_ = 0;
     };
