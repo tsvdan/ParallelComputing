@@ -2,7 +2,8 @@
 #include <omp.h>
 #include <cmath>
 #include <tuple>
-#include <iostream>  // delete
+#include <ostream>
+#include <iomanip>
 
 Matrix::Matrix(const Matrix& M)
     : rows_(M.rows_), columns_(M.columns_), data_(M.data_) {
@@ -97,9 +98,10 @@ Matrix operator*(const Matrix& A, double multi) {
 
 
 std::ostream& operator<<(std::ostream& os, const Matrix& A) {
+    os << std::fixed << std::setprecision(2);
     for (size_t i = 0; i < A.rows(); ++i) {
         for (size_t j = 0; j < A.columns(); ++j) {
-            os << A(i, j) << ' ';
+            os << std::setw(10) << std::left << A(i, j);
         }
         os << '\n';
     }

@@ -13,9 +13,9 @@ std::tuple<Matrix*, Matrix*, Matrix*> random_system(size_t n) {
 
     std::random_device rd;
     std::default_random_engine gen{ rd() };
-    std::uniform_real_distribution<double> U_upper_dist{ -9, 9 };  // подумать
+    std::uniform_real_distribution<double> U_upper_dist{ -0.1, 0.1 };  // подумать
     std::uniform_int_distribution<int>  x_dist{ 1, 9 };
-    std::uniform_int_distribution<int>  diag_dist{ 1, 3 };
+    std::uniform_int_distribution<int>  diag_dist{ 1, 9 };
     std::uniform_real_distribution<double> coin{ 0, 1 };
     for (int i = 0; i < n; ++i) {
         (*x)(i, 0) = x_dist(gen) * (coin(gen) > 0.5 ? 1 : -1);
@@ -40,14 +40,14 @@ std::tuple<Matrix*, Matrix*, Matrix*> random_system(size_t n) {
 
 
 int main() {
-    // auto Axb = random_system(2);
-    // Matrix* A = std::get<0>(Axb);
-    // Matrix* X = std::get<1>(Axb);
-    // Matrix* B = std::get<2>(Axb);
+    auto Axb = random_system(5);
+    Matrix* A = std::get<0>(Axb);
+    Matrix* X = std::get<1>(Axb);
+    Matrix* B = std::get<2>(Axb);
 
-    Matrix A{2, 2, {1, 2, 1, 1}}; // -- минимальный пример для которого метод Якоби (и Зейделя*) не сх 
-    Matrix B{2, 1, {4, 3}};
-    cout << A * Matrix{2, 1, {2, 1}} - B << endl;
+    // Matrix A{2, 2, {1, 2, 1, 1}}; // -- минимальный пример для которого метод Якоби (и Зейделя*) не сх 
+    // Matrix B{2, 1, {4, 3}};
+    // cout << A * Matrix{2, 1, {2, 1}} - B << endl;
     
     auto time_start_serial = omp_get_wtime();
     omp_set_num_threads(1);
@@ -72,7 +72,7 @@ int main() {
         return x;
     };
 
-    cout << jacobi_m(A, B) << endl;
+    cout << jacobi_m(*A, *B) << endl;
 
     auto zeidel_relax_m = [] (const Matrix& a, const Matrix& b, double omega) -> Matrix {
         Matrix x(a.columns(), 1, 0.0);
@@ -100,7 +100,7 @@ int main() {
         return x;
     };
 
-    cout << zeidel_relax_m(A, B, 0.56) << endl;
+    cout << zeidel_relax_m(*A, *B, 0.56) << endl;
 
 
     auto time_end_serial   = omp_get_wtime();
@@ -112,8 +112,8 @@ int main() {
 
     omp_set_num_threads(4);
     auto time_start_parallel = omp_get_wtime();
-    cout << jacobi_m(A, B) << endl;
-    cout << zeidel_relax_m(A, B, 0.56) << endl;
+    cout << jacobi_m(*A, *B) << endl;
+    cout << zeidel_relax_m(*A, *B, 0.56) << endl;
     auto time_end_parallel   = omp_get_wtime();
     cout << "Параллельное время выполения: " << time_end_parallel - time_start_parallel << endl;
 }
