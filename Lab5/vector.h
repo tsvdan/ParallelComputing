@@ -117,6 +117,9 @@ private:
         data_ = tmp_data;
         capacity_ *= 2;
     }
+    
+    template <class U>
+    friend class SafeStack;
 };
 
 template<typename T>

@@ -7,7 +7,7 @@
 using namespace std;
 
 const double EPSILON{ 1e-7 };
-const int N{ 1'000'000 };
+const int N{ 1'000'000 };  // с ростом N растут промежуточные U_k[N-1]-ые; на миллионе начинается лажа (но с ~правильным ответом?)
 
 vector<double> operator+(vector<double> lhs, const vector<double>& rhs) {
     for (int i = 0; i < lhs.size(); ++i) {
@@ -28,7 +28,7 @@ using fn_type = function<double(double, const vector<double>&)>;
 int main() {
 // INIT
     vector<double> U_0{ 2, 1 };
-    double t{ 2 };
+    double t{ 1.99 };
     vector<fn_type> F{
         []   (double t, const vector<double>& U) -> double { return 3 * U[0] - U[0] * U[0] - U[0] * U[1]; }
         ,[]  (double t, const vector<double>& U) -> double { return U[1] - U[1] * U[1] + U[0] * U[1]; }
@@ -87,6 +87,5 @@ int main() {
         cout << U_k[N-1] << endl;
     }
 
-    cout << "Решение U(t) = ( " << U_k[N-1] << ")" << endl;
-    cout << "При t = " << t << endl;
+    cout << "U(" << t << ") = ( " << U_k[N-1] << ")" << endl;
 }
